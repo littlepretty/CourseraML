@@ -23,11 +23,22 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
-
-
-
-
-
+params = [0.01 0.03 0.1 0.3 1 3 10 30];
+min_err = 1.0;
+for i = 1:length(params)
+        for j = 1:length(params)
+                model = svmTrain(X, y, params(i), @(x1, x2) gaussianKernel(x1, x2, params(j)));
+                pred = svmPredict(model, Xval);
+                err = mean(double(pred ~= yval));
+                if err < min_err
+                        C = params(i);
+                        sigma = params(j);
+                        min_err = err;
+                endif
+        endfor
+endfor
+%disp('The value of C is:'), disp(C);
+%disp('The value of sigma is:'), disp(sigma);
 
 % =========================================================================
 
